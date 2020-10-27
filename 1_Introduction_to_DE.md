@@ -2,24 +2,27 @@
 
 ## Table of contents
 
-- [Tools of DEs](#tools-of-des)
-- [Cloud technologies](#cloud-technologies)
-- [Databases](#databases)
-- [Parallel computing](#parallel-computing)
-  * [Multiprocessing](#multiprocessing)
-  * [Dask](#dask)
-  * [PySpark](#pyspark)
-    + [Running PySpark files](#running-pyspark-files)
-- [Workflow scheduling frameworks](#workflow-scheduling-frameworks)
-  * [Apache Airflow](#apache-airflow)
-    + [Airflow DAGs](#airflow-dags)
-- [ETL](#etl)
-  * [Extract](#extract)
-    + [Files](#files)
-    + [API](#api)
-    + [Databases](#databases-1)
-  * [Transform](#transform)
-  * [Loading](#loading)
+- [Introduction to DE](#introduction-to-de)
+  * [Table of contents](#table-of-contents)
+- [Introduction to DE](#introduction-to-de-1)
+  * [Tools of DEs](#tools-of-des)
+  * [Cloud technologies](#cloud-technologies)
+  * [Databases](#databases)
+  * [Parallel computing](#parallel-computing)
+    + [Multiprocessing](#multiprocessing)
+    + [Dask](#dask)
+    + [PySpark](#pyspark)
+  * [Workflow scheduling frameworks](#workflow-scheduling-frameworks)
+    + [Apache Airflow](#apache-airflow)
+      - [Airflow DAGs](#airflow-dags)
+  * [ETL](#etl)
+    + [Extract](#extract)
+    + [Transform](#transform)
+    + [Loading](#loading)
+    + [Putting it all together](#putting-it-all-together)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 ==========================
 
