@@ -25,7 +25,11 @@
 
 ## Parallel computing
 
+**multiprocessing** is a package that supports spawning processes using an low-level API.
+
 ```python
+from multiprocessing import Pool
+
 @print_timing
 def parallel_apply(apply_func, groups, nb_cores):
     with Pool(nb_cores) as p:
@@ -47,3 +51,15 @@ Output:
 >Processing time: 942.0187473297119  
 >Processing time: 626.5206336975098  
 >Processing time: 343.02663803100586  
+
+A more convenient way to parallelize an apply over several groups is using the dask framework and its abstraction of the pandas DataFrame.
+
+```python
+import dask.dataframe as dd
+
+# Set the number of pratitions
+athlete_events_dask = dd.from_pandas(athlete_events, npartitions = 4)
+
+# Calculate the mean Age per Year
+print(athlete_events_dask.groupby('Year').Age.mean().compute())
+```
