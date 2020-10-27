@@ -1,3 +1,5 @@
+# Table of Contents
+
 - [Introduction to DE](#introduction-to-de)
   * [Tools of DEs](#tools-of-des)
   * [Cloud technologies](#cloud-technologies)
@@ -17,8 +19,6 @@
       - [Databases](#databases-1)
     + [Transform](#transform)
     + [Loading](#loading)
-
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ==========================
 
