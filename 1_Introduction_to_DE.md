@@ -48,6 +48,8 @@
 1. Databases can be relational or non-relational (usually used for caching or distributed configuration). Values in a document database are structured or semi-structured objects, for example, a JSON object.
 2. Most popular schema is the star schema: At the center is the **facts** tables, which contain things that happened(eg. Product Orders). Surrounding are **Dimensions** tablesles, which contain information on the word (eg. Customer Information).
 
+Further readings: [1](https://docs.microsoft.com/en-us/power-bi/guidance/star-schema) and [2](https://en.wikipedia.org/wiki/Star_schema).
+
 ## Parallel computing
 
 ### Multiprocessing
@@ -170,6 +172,8 @@ only showing top 20 rows
 
 #### Running PySpark files
 
+In bash:
+
 ```bash
 spark-submit --master local[4] /home/repl/spark-script.py
 ```
@@ -215,6 +219,9 @@ only showing top 20 rows
 - Created in 2015 at AirBnB, later join the Apache Software Foundation in 2016
 - Built around the concept of DAGs (Directed Acylic Graph)
 - Using Python, developers can create and test these DAGs that build up complex pipelines
+- Note that Airflow doesn't work very well in Windows 10. For installation, it's best to set up Airflow in Docker and Ubuntu/CentOS.
+
+Further reading: [Installing Airflow on Windows 10](https://coding-stream-of-consciousness.com/2018/11/07/install-airflow-on-windows-docker-centos/).
 
 #### Airflow DAGs
 
@@ -383,7 +390,95 @@ print(film_df_with_ratings.show(5))
 
 ### Loading
 
+As mentioned before, databases are often separated between databases for analytics and databases for applications.
+
+On analytic databases:
+
+- We run: complex aggregate queries
+- Column-oriented
+- Queries about subset of columns
+- Better parallelization
+
+On application databases:
+
+- We run a lot of transactions
+- Row-oriented
+- Stored per record
+- Added per transaction
+- Eg. adding customer is fast
+
+ MPP Databases (Massively parallel processing databases): Amazon redshift, Azure SQL data warehouse, Google BigQuery
+
+- often use parquet file format (csv is not suitable)
+- column oriented
+- run in a distributed fashion
+
+Further readings: [OLAP vs. OLTP](https://www.imaginarycloud.com/blog/oltp-vs-olap/), [row-oriented vs. column oriented](https://en.wikipedia.org/wiki/Column-oriented_DBMS), [Apache Parquet](https://parquet.apache.org/documentation/latest/).
+
+__Writing to a file__
+
+```python
+# Write the pandas DataFrame to parquet
+film_pdf.to_parquet("films_pdf.parquet")
+
+# Write the PySpark DataFrame to parquet
+film_sdf.write.parquet("films_sdf.parquet")
+```
+
+__Load into Postgres__
+
+```python
+# Finish the connection URI
+connection_uri = "postgresql://repl:password@localhost:5432/dwh"
+db_engine_dwh = sqlalchemy.create_engine(connection_uri)
+
+# Transformation step, join with recommendations data
+film_pdf_joined = film_pdf.join(recommendations)
+
+# Finish the .to_sql() call to write to store.film
+film_pdf_joined.to_sql("film", db_engine_dwh, schema="store", if_exists="replace")
+
+# Run the query to fetch the data
+pd.read_sql("SELECT film_id, recommended_film_ids FROM store.film", db_engine_dwh)
+```
+
+### Putting it all together
+
+#### The ETL function
+
+```python
+def extract_table_to_df(tablename, db_engine):
+    return pd.read_sql('SELECT * FROM {}'.format(tablename), db_engine)
+
+def transform_df(df, column, pat, suffixes):
+    # transform data
+
+def load_df_to_dwh(film_df, tablename, schema, db_engine):
+    return pd.to_sql(tablename, db_engine, schema=schema, if_exists='replace')
 
 
+= {...} # Needs to be configured
+def etl():
+    film_df = extract_table_to_df('film', 
+    
+    
+    ['store'])
+    film_df = transform_rental_rate(film_df, 'rental_rate', '.', ['_dollar', '_cents'])
+    load_dataframe_to_film(film_df, 'film', 'store', 'db_engines['dwh'])
+```
 
- 
+#### Scheduling with DAGs in Airflow
+
+```python
+from airflow.models import DAG
+from airflow.operators.python_operator import PythonOperator
+
+dag = DAG(dag_id="etl_pipline",
+          schedule_interval="0 0 * * *")
+
+etl_task = PythonOperator(task_id="etl_task",
+                          python_callable=etl,
+                          dag=dag)
+                          
+etl_task.set_upstream(wait_for_this_task)
+```
