@@ -63,3 +63,5 @@ athlete_events_dask = dd.from_pandas(athlete_events, npartitions = 4)
 # Calculate the mean Age per Year
 print(athlete_events_dask.groupby('Year').Age.mean().compute())
 ```
+
+When it comes to big data, Spark is probably a more popular choice for data processing.
