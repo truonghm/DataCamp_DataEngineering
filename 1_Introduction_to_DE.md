@@ -45,12 +45,11 @@ parallel_apply(take_mean_age, athlete_events.groupby('Year'), nb_cores=2)
 # Parallel apply using 4 cores
 parallel_apply(take_mean_age, athlete_events.groupby('Year'), nb_cores=4)
 ```
-
-Output:
-
+```
 >Processing time: 942.0187473297119  
 >Processing time: 626.5206336975098  
 >Processing time: 343.02663803100586  
+```
 
 A more convenient way to parallelize an apply over several groups is using the dask framework and its abstraction of the pandas DataFrame.
 
@@ -66,47 +65,52 @@ print(athlete_events_dask.groupby('Year').Age.mean().compute())
 
 When it comes to big data, Spark is probably a more popular choice for data processing.
 
+Print the type of athlete_events_spark
 ```python
-# Print the type of athlete_events_spark
 print(type(athlete_events_spark))
 ```
-><class 'pyspark.sql.dataframe.DataFrame'>
+```
+<class 'pyspark.sql.dataframe.DataFrame'>
+```
 
+Print the schema of athlete_events_spark
 ```python
-# Print the schema of athlete_events_spark
 print(athlete_events_spark.printSchema())
 ```
->root  
-> |-- ID: integer (nullable = true)  
-> |-- Name: string (nullable = true)  
-> |-- Sex: string (nullable = true)  
-> |-- Age: integer (nullable = true)  
-> |-- Height: string (nullable = true)  
-> |-- Weight: string (nullable = true)  
-> |-- Team: string (nullable = true)  
-> |-- NOC: string (nullable = true)  
-> |-- Games: string (nullable = true)  
-> |-- Year: integer (nullable = true)  
-> |-- Season: string (nullable = true)  
-> |-- City: string (nullable = true)  
-> |-- Sport: string (nullable = true)  
-> |-- Event: string (nullable = true)  
-> |-- Medal: string (nullable = true)  
->  
->None  
+```
+root  
+ |-- ID: integer (nullable = true)  
+ |-- Name: string (nullable = true)  
+ |-- Sex: string (nullable = true)  
+ |-- Age: integer (nullable = true)  
+ |-- Height: string (nullable = true)  
+ |-- Weight: string (nullable = true)  
+ |-- Team: string (nullable = true)  
+ |-- NOC: string (nullable = true)  
+ |-- Games: string (nullable = true)  
+ |-- Year: integer (nullable = true)  
+ |-- Season: string (nullable = true)  
+ |-- City: string (nullable = true)  
+ |-- Sport: string (nullable = true)  
+ |-- Event: string (nullable = true)  
+ |-- Medal: string (nullable = true)  
+  
+None  
+```
 
+Group by the Year, and find the mean Age
+Notice that spark has not actually calculated anything yet. You can call this lazy evaluation.
 ```python
-# Group by the Year, and find the mean Age
-# Notice that spark has not actually calculated anything yet. You can call this lazy evaluation.
 print(athlete_events_spark.groupBy('Year').mean('Age'))
 ```
->DataFrame[Year: int, avg(Age): double]
-
-```python
-# Group by the Year, and find the mean Age
-print(athlete_events_spark.groupBy('Year').mean('Age').show())
+```
+DataFrame[Year: int, avg(Age): double]
 ```
 
+Group by the Year, and find the mean Age, and call `.show()` on the result to calculate the mean age.
+```python
+print(athlete_events_spark.groupBy('Year').mean('Age').show())
+```
 ```
 >+----+------------------+
 |Year|          avg(Age)|
