@@ -25,6 +25,7 @@
 
 ## Parallel computing
 
+### Multiprocessing
 **multiprocessing** is a package that supports spawning processes using an low-level API.
 
 ```python
@@ -51,6 +52,8 @@ parallel_apply(take_mean_age, athlete_events.groupby('Year'), nb_cores=4)
 >Processing time: 343.02663803100586  
 ```
 
+### Dask
+
 A more convenient way to parallelize an apply over several groups is using the dask framework and its abstraction of the pandas DataFrame.
 
 ```python
@@ -63,6 +66,7 @@ athlete_events_dask = dd.from_pandas(athlete_events, npartitions = 4)
 print(athlete_events_dask.groupby('Year').Age.mean().compute())
 ```
 
+### PySpark
 When it comes to big data, Spark is probably a more popular choice for data processing.
 
 Print the type of athlete_events_spark
@@ -138,3 +142,223 @@ print(athlete_events_spark.groupBy('Year').mean('Age').show())
 +----+------------------+
 only showing top 20 rows
 ```
+
+#### Running PySpark files
+
+```bash
+spark-submit --master local[4] /home/repl/spark-script.py
+```
+```
+Picked up _JAVA_OPTIONS: -Xmx512m
+Picked up _JAVA_OPTIONS: -Xmx512m
+20/10/27 06:32:23 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
++----+------------------+
+|Year|       avg(Height)|
++----+------------------+
+|1896| 172.7391304347826|
+|1900|176.63793103448276|
+|1904| 175.7887323943662|
+|1906|178.20622568093384|
+|1908|177.54315789473685|
+|1912| 177.4479889042996|
+|1920| 175.7522816166884|
+|1924|174.96303901437372|
+|1928| 175.1620512820513|
+|1932|174.22011541632315|
+|1936| 175.7239932885906|
+|1948|176.17279726261762|
+|1952|174.13893967093236|
+|1956|173.90096798212957|
+|1960|173.14128595600675|
+|1964|  173.448573701557|
+|1968| 173.9458648072826|
+|1972|174.56536284096757|
+|1976|174.92052773737794|
+|1980|175.52748832195473|
++----+------------------+
+only showing top 20 rows
+```
+
+## Workflow scheduling frameworks
+
+- Linux's cron
+- Spotify's Luigi
+- Apache Airflow (our focus)
+
+### Apache Airflow
+
+- Created in 2015 at AirBnB, later join the Apache Software Foundation in 2016
+- Built around the concept of DAGs (Directed Acylic Graph)
+- Using Python, developers can create and test these DAGs that build up complex pipelines
+
+#### Airflow DAGs
+
+The `schedule_interval` keyword argument needs to be filled in using the crontab notation. For example, every hour at minute N would be `N * * * *`. To run at minute 0, we use `0 * * * *`
+
+```python
+from airflow import DAG
+
+# Create the DAG object
+dag = DAG(dag_id="car_factory_simulation",
+          default_args={"owner": "airflow","start_date": airflow.utils.dates.days_ago(2)},
+          schedule_interval="0 * * * *")
+
+# Task definitions
+assemble_frame = BashOperator(task_id="assemble_frame", bash_command='echo "Assembling frame"', dag=dag)
+place_tires = BashOperator(task_id="place_tires", bash_command='echo "Placing tires"', dag=dag)
+assemble_body = BashOperator(task_id="assemble_body", bash_command='echo "Assembling body"', dag=dag)
+apply_paint = BashOperator(task_id="apply_paint", bash_command='echo "Applying paint"', dag=dag)
+
+# Complete the downstream flow
+assemble_frame.set_downstream(place_tires)
+assemble_frame.set_downstream(assemble_body)
+assemble_body.set_downstream(apply_paint)
+```
+
+## ETL
+
+### Extract
+
+Sources of data for extraction could be:
+
+- file: file storage on Amazon S3. 
+- database: SQL database
+- API
+
+#### Files
+ 
+Files can be:
+
++ unstructured (eg. text) or,  
++ flat files in tabular format (eg. csv)   
++ JSON: JavaScript Object Notation.
+
+JSON holds data in a semi-structured way. It consists of 4 atomic data types: number, string, boolean and null. There are also 2 composite data types: array and object. You could compare it to a dictionary in Python.
+
+#### API
+
+Data on the web often come in JSON format, which is communicated in the form of "requests", which get "responses".
+
+However, data in JSON format can often be unreadable by human. We use APIs for this.
+
+For example, the Hackernews API:
+
+```python
+import requests
+
+# Fetch the Hackernews post
+resp = requests.get("https://hacker-news.firebaseio.com/v0/item/16222426.json")
+
+# Print the response parsed as JSON
+print(resp.json())
+
+# Assign the score of the test to post_score
+post_score = resp.json()['score']
+print('post score is: ' + post_score)
+```
+```
+{'by': 'neis', 'descendants': 0, 'id': 16222426, 'score': 17, 'time': 1516800333, 'title': 'Duolingo-Style Learning for Data Science: DataCamp for Mobile', 'type': 'story', 'url': 'https://medium.com/datacamp/duolingo-style-learning-for-data-science-datacamp-for-mobile-3861d1bc02df'}
+post score is: 17
+```
+
+#### Databases
+
+Applications databases
+- Transactions
+- Inserts or changes
+- OLTP: Online transaction processing
+- Row-oriented
+
+Analytical databases
+- Online analytical processing
+- Column-oriented
+
+In Python, we need a connection string and connect using __pyodbc__ or __sqlalchemy__.
+
+Using the [Pagila example database](https://github.com/devrimgunduz/pagila):
+
+As for the connection URI: The host is `localhost` and port is `5432`. The username and password are `repl` and `password`, respectively. The database is `pagila`. 
+
+```python
+import sqlalchemy
+
+# Function to extract table to a pandas DataFrame
+def extract_table_to_pandas(tablename, db_engine):
+    query = "SELECT * FROM {}".format(tablename)
+    return pd.read_sql(query, db_engine)
+
+# Connect to the database using the connection URI
+connection_uri = "postgresql://repl:password@localhost:5432/pagila" 
+db_engine = sqlalchemy.create_engine(connection_uri)
+
+# Extract the film table into a pandas DataFrame
+extract_table_to_pandas('film', db_engine)
+
+# Extract the customer table into a pandas DataFrame
+extract_table_to_pandas('customer', db_engine)
+```
+
+### Transform
+
+Types of transformations:
+ 
+1. Selection of attribute (eg. 'email')
+
+2. Translation of code values (eg. 'New York' -> 'NY')
+
+3. Data validation (eg. date input in 'created_at')
+
+4. Splitting columns into multiple columns
+
+5. Joining from multiple sources
+
+__Splitting data:__
+
+```python
+# Get the rental rate column as a string
+rental_rate_str = film_df.rental_rate.astype('str')
+
+# Split up and expand the column
+rental_rate_expanded = rental_rate_str.str.split('.', expand=True)
+
+# Assign the columns to film_df
+film_df = film_df.assign(
+    rental_rate_dollar=rental_rate_expanded[0],
+    rental_rate_cents=rental_rate_expanded[1],
+)
+```
+
+__Connecting to database with PySpark:__
+
+```python
+import pyspark.sql
+
+spark = pyspark.sql.SparkSession.builder.getOrCreate()
+
+spark.read.jdbc("jdbc:postgresql://localhost:5432/pagila",
+                "customer",
+                {"user":"repl","password":"password"})
+```
+
+__Joining in PySpark:__
+
+```python
+# Use groupBy and mean to aggregate the column
+ratings_per_film_df = rating_df.groupby('film_id').mean('rating')
+
+# Join the tables using the film_id column
+film_df_with_ratings = film_df.join(
+    ratings_per_film_df,
+    film_df.film_id==ratings_per_film_df.film_id
+)
+
+# Show the 5 first results
+print(film_df_with_ratings.show(5))
+```
+
+### Loading
+
+
+
+
+ 
