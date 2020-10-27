@@ -170,7 +170,7 @@ print(athlete_events_spark.groupBy('Year').mean('Age').show())
 only showing top 20 rows
 ```
 
-#### Running PySpark files
+__Running PySpark files__
 
 In bash:
 
@@ -257,7 +257,7 @@ Sources of data for extraction could be:
 - database: SQL database
 - API
 
-#### Files
+__Files__
  
 Files can be:
 
@@ -267,7 +267,7 @@ Files can be:
 
 JSON holds data in a semi-structured way. It consists of 4 atomic data types: number, string, boolean and null. There are also 2 composite data types: array and object. You could compare it to a dictionary in Python.
 
-#### API
+__API__
 
 Data on the web often come in JSON format, which is communicated in the form of "requests", which get "responses".
 
@@ -293,7 +293,7 @@ print('post score is: ' + post_score)
 post score is: 17
 ```
 
-#### Databases
+__Databases__
 
 Applications databases
 - Transactions
@@ -362,6 +362,8 @@ film_df = film_df.assign(
 
 __Connecting to database with PySpark:__
 
+Note that the syntax for specifying connection is different from the usual connection string.
+
 ```python
 import pyspark.sql
 
@@ -373,6 +375,8 @@ spark.read.jdbc("jdbc:postgresql://localhost:5432/pagila",
 ```
 
 __Joining in PySpark:__
+
+Note that the joinining syntax is similar to pandas, but not entirely the same. Note the use of the `==` operator for matching columns between tables. In pandas, the `left_on=` and `right_on=` arguments are used, or `on=` if the columns have the same names.
 
 ```python
 # Use groupBy and mean to aggregate the column
@@ -444,7 +448,7 @@ pd.read_sql("SELECT film_id, recommended_film_ids FROM store.film", db_engine_dw
 
 ### Putting it all together
 
-#### The ETL function
+__The ETL function__
 
 ```python
 def extract_table_to_df(tablename, db_engine):
@@ -467,7 +471,7 @@ def etl():
     load_dataframe_to_film(film_df, 'film', 'store', 'db_engines['dwh'])
 ```
 
-#### Scheduling with DAGs in Airflow
+__Scheduling with DAGs in Airflow__
 
 ```python
 from airflow.models import DAG
