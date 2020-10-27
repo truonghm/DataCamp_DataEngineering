@@ -44,6 +44,6 @@ parallel_apply(take_mean_age, athlete_events.groupby('Year'), nb_cores=4)
 
 Output:
 
->Processing time: 942.0187473297119
->Processing time: 626.5206336975098
->Processing time: 343.02663803100586
+>Processing time: 942.0187473297119  
+>Processing time: 626.5206336975098  
+>Processing time: 343.02663803100586  
