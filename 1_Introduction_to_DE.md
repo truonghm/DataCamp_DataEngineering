@@ -2,10 +2,7 @@
 
 ## Table of contents
 
-- [Introduction to DE](#introduction-to-de)
-  * [Table of contents](#table-of-contents)
-- [Introduction to DE](#introduction-to-de-1)
-  * [Tools of DEs](#tools-of-des)
+- [Toolbox Overview](#toolbox-overview)
   * [Cloud technologies](#cloud-technologies)
   * [Databases](#databases)
   * [Parallel computing](#parallel-computing)
@@ -15,28 +12,25 @@
   * [Workflow scheduling frameworks](#workflow-scheduling-frameworks)
     + [Apache Airflow](#apache-airflow)
       - [Airflow DAGs](#airflow-dags)
-  * [ETL](#etl)
-    + [Extract](#extract)
-    + [Transform](#transform)
-    + [Loading](#loading)
-    + [Putting it all together](#putting-it-all-together)
+- [ETL](#etl)
+  * [Extract](#extract)
+  * [Transform](#transform)
+  * [Loading](#loading)
+  * [Putting it all together](#putting-it-all-together)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
-
 ==========================
 
-# Introduction to DE
+## Toolbox Overview
 
-## Tools of DEs
-
-1. Databases (MySQL, PostgreSQL)
+1. Databases & Cloud (MySQL, PostgreSQL, SQS, Microsoft Azure, Google Cloud)
 
 2. Processing tools for cleaning, aggregating and joining data (PySpark)
 
 3. Scheduling for planning jobs, resolving dependency requirements of jobs (Airflow, oozie, cron)
 
-## Cloud technologies
+### Cloud technologies
 
 1. The big 3: AWS, Microsoft Azure, Google Cloud
 
@@ -46,16 +40,16 @@
 
 4. AWS RDS, Azure SQL Database,  Google Cloud SQL
 
-## Databases
+### Databases
 
 1. Databases can be relational or non-relational (usually used for caching or distributed configuration). Values in a document database are structured or semi-structured objects, for example, a JSON object.
 2. Most popular schema is the star schema: At the center is the **facts** tables, which contain things that happened(eg. Product Orders). Surrounding are **Dimensions** tablesles, which contain information on the word (eg. Customer Information).
 
 Further readings: [1](https://docs.microsoft.com/en-us/power-bi/guidance/star-schema) and [2](https://en.wikipedia.org/wiki/Star_schema).
 
-## Parallel computing
+### Parallel computing
 
-### Multiprocessing
+#### Multiprocessing
 **multiprocessing** is a package that supports spawning processes using an low-level API.
 
 ```python
@@ -82,7 +76,7 @@ parallel_apply(take_mean_age, athlete_events.groupby('Year'), nb_cores=4)
 >Processing time: 343.02663803100586  
 ```
 
-### Dask
+#### Dask
 
 A more convenient way to parallelize an apply over several groups is using the dask framework and its abstraction of the pandas DataFrame.
 
@@ -96,7 +90,7 @@ athlete_events_dask = dd.from_pandas(athlete_events, npartitions = 4)
 print(athlete_events_dask.groupby('Year').Age.mean().compute())
 ```
 
-### PySpark
+#### PySpark
 When it comes to big data, Spark is probably a more popular choice for data processing.
 
 Print the type of athlete_events_spark
@@ -211,13 +205,13 @@ Picked up _JAVA_OPTIONS: -Xmx512m
 only showing top 20 rows
 ```
 
-## Workflow scheduling frameworks
+### Workflow scheduling frameworks
 
 - Linux's cron
 - Spotify's Luigi
 - Apache Airflow (our focus)
 
-### Apache Airflow
+#### Apache Airflow
 
 - Created in 2015 at AirBnB, later join the Apache Software Foundation in 2016
 - Built around the concept of DAGs (Directed Acylic Graph)
@@ -226,7 +220,7 @@ only showing top 20 rows
 
 Further reading: [Installing Airflow on Windows 10](https://coding-stream-of-consciousness.com/2018/11/07/install-airflow-on-windows-docker-centos/).
 
-#### Airflow DAGs
+##### Airflow DAGs
 
 The `schedule_interval` keyword argument needs to be filled in using the crontab notation. For example, every hour at minute N would be `N * * * *`. To run at minute 0, we use `0 * * * *`
 
@@ -489,3 +483,6 @@ etl_task = PythonOperator(task_id="etl_task",
                           
 etl_task.set_upstream(wait_for_this_task)
 ```
+
+Further resources on `cron` string syntax: [1](https://crontab-generator.org/) and [2](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).
+
