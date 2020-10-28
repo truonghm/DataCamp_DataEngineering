@@ -11,12 +11,21 @@
     + [PySpark](#pyspark)
   * [Workflow scheduling frameworks](#workflow-scheduling-frameworks)
     + [Apache Airflow](#apache-airflow)
-      - [Airflow DAGs](#airflow-dags)
 - [ETL](#etl)
   * [Extract](#extract)
+    + [Files](#files)
+    + [API](#api)
+    + [Databases](#databases-1)
   * [Transform](#transform)
+    + [Splitting data](#splitting-data)
+    + [Connecting to database with PySpark](#connecting-to-database-with-pyspark)
+    + [Joining in PySpark](#joining-in-pyspark)
   * [Loading](#loading)
+    + [Writing to a file](#writing-to-a-file)
+    + [Load into Postgres](#load-into-postgres)
   * [Putting it all together](#putting-it-all-together)
+    + [The ETL function](#the-etl-function)
+    + [Scheduling with DAGs in Airflow](#scheduling-with-dags-in-airflow)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -220,7 +229,7 @@ only showing top 20 rows
 
 Further reading: [Installing Airflow on Windows 10](https://coding-stream-of-consciousness.com/2018/11/07/install-airflow-on-windows-docker-centos/).
 
-##### Airflow DAGs
+__Airflow DAGs__
 
 The `schedule_interval` keyword argument needs to be filled in using the crontab notation. For example, every hour at minute N would be `N * * * *`. To run at minute 0, we use `0 * * * *`
 
@@ -254,7 +263,7 @@ Sources of data for extraction could be:
 - database: SQL database
 - API
 
-__Files__
+#### Files
  
 Files can be:
 
@@ -264,7 +273,7 @@ Files can be:
 
 JSON holds data in a semi-structured way. It consists of 4 atomic data types: number, string, boolean and null. There are also 2 composite data types: array and object. You could compare it to a dictionary in Python.
 
-__API__
+#### API
 
 Data on the web often come in JSON format, which is communicated in the form of "requests", which get "responses".
 
@@ -290,7 +299,7 @@ print('post score is: ' + post_score)
 post score is: 17
 ```
 
-__Databases__
+#### Databases
 
 Applications databases
 - Transactions
@@ -341,7 +350,7 @@ Types of transformations:
 
 5. Joining from multiple sources
 
-__Splitting data:__
+#### Splitting data
 
 ```python
 # Get the rental rate column as a string
@@ -357,7 +366,7 @@ film_df = film_df.assign(
 )
 ```
 
-__Connecting to database with PySpark:__
+#### Connecting to database with PySpark
 
 Note that the syntax for specifying connection is different from the usual connection string.
 
@@ -371,7 +380,7 @@ spark.read.jdbc("jdbc:postgresql://localhost:5432/pagila",
                 {"user":"repl","password":"password"})
 ```
 
-__Joining in PySpark:__
+#### Joining in PySpark
 
 Note that the joinining syntax is similar to pandas, but not entirely the same. Note the use of the `==` operator for matching columns between tables. In pandas, the `left_on=` and `right_on=` arguments are used, or `on=` if the columns have the same names.
 
@@ -416,7 +425,7 @@ On application databases:
 
 Further readings: [OLAP vs. OLTP](https://www.imaginarycloud.com/blog/oltp-vs-olap/), [row-oriented vs. column oriented](https://en.wikipedia.org/wiki/Column-oriented_DBMS), [Apache Parquet](https://parquet.apache.org/documentation/latest/).
 
-__Writing to a file__
+#### Writing to a file
 
 ```python
 # Write the pandas DataFrame to parquet
@@ -426,7 +435,7 @@ film_pdf.to_parquet("films_pdf.parquet")
 film_sdf.write.parquet("films_sdf.parquet")
 ```
 
-__Load into Postgres__
+#### Load into Postgres
 
 ```python
 # Finish the connection URI
@@ -445,7 +454,7 @@ pd.read_sql("SELECT film_id, recommended_film_ids FROM store.film", db_engine_dw
 
 ### Putting it all together
 
-__The ETL function__
+#### The ETL function
 
 ```python
 def extract_table_to_df(tablename, db_engine):
@@ -468,7 +477,7 @@ def etl():
     load_dataframe_to_film(film_df, 'film', 'store', 'db_engines['dwh'])
 ```
 
-__Scheduling with DAGs in Airflow__
+#### Scheduling with DAGs in Airflow
 
 ```python
 from airflow.models import DAG
