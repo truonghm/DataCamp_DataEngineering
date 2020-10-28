@@ -26,6 +26,7 @@
   * [Putting it all together](#putting-it-all-together)
     + [The ETL function](#the-etl-function)
     + [Scheduling with DAGs in Airflow](#scheduling-with-dags-in-airflow)
+- [Quick review](#quick-review)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -497,9 +498,32 @@ Further resources on `cron` string syntax: [1](https://crontab-generator.org/) a
 
 ## Quick review
 
-### Some useful pandas functions/methods
+__Some useful pandas functions/methods__
 
 - Sort values: `df.sort_values(ascending=False)`
 - Get number of missing values per column: `df.isnull().sum()`
 - Filling missing values: `df.fillna({"col1": "0"})`
-- 
+
+__Defining DAG__
+
+- `PythonOperator`: Use the `PythonOperator` to execute Python callables. Use the `op_args` and `op_kwargs` arguments to pass additional arguments to the Python callable (passed as dict).
+
+__Writing dynamic queries__
+
+```python
+def query_function(cond1, cond2):
+  # Join with the courses table
+  query = """
+  SELECT * FROM table1
+    LEFT JOIN table2 ON table1.id = table2.id
+    WHERE col1=%(cond1)s AND cond2>%(cond2)s
+    ORDER BY rating DESC
+  """
+  # Add the parameters
+  output_df = pd.read_sql(query, db_engine, params = {"cond1": cond1, 
+                                                           "cond2": cond2})
+  return output_df
+
+# Try the function you created
+print(query_function(value_for_cond1, value_for_cond2))
+```
