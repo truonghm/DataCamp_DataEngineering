@@ -495,3 +495,11 @@ etl_task.set_upstream(wait_for_this_task)
 
 Further resources on `cron` string syntax: [1](https://crontab-generator.org/) and [2](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).
 
+## Quick review
+
+### Some useful pandas functions/methods
+
+- Sort values: `df.sort_values(ascending=False)`
+- Get number of missing values per column: `df.isnull().sum()`
+- Filling missing values: `df.fillna({"col1": "0"})`
+- 
