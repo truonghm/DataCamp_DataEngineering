@@ -31,7 +31,10 @@ For faster speed, consider using __multiprocessing__ or __dask__.
 
 ## Importing Data From Excel Files
 
+Some useful arguments for `pd.read_excel`:
 
+- `usecols`: besides similar usage in `read_csv`, we can also specify Excel column letters and column ranges (e.g. “A:E” or “A,C,E:F”).
+- 
 
 
 
