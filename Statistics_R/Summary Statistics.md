@@ -8,4 +8,27 @@
   - Nominal: no order
   - Ordinal: has order
 
-# 
+# Measurement of center
+
+- Mean: sum/count
+
+```r
+mean(df$column)
+```
+
+- Median: is the value where 50% of the data is lower than it, and 50% is higher
+
+```r
+# sorting and taking the middle value
+sort(df$column)[middle_value]
+# use the median function
+median(df$column)
+```
+
+- Mode: The most frequent value. Can be used for categorical data, even if unordered.
+
+```r
+df %>% count(column, sort=TRUE)
+```
+
+
