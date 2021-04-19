@@ -1,4 +1,6 @@
-# Data type
+# Summary Statistics
+
+## Data type
 
 1. Quantitative
   - Continuous
@@ -8,7 +10,7 @@
   - Nominal: no order
   - Ordinal: has order
 
-# Measurement of center
+## Measurement of center
 
 - Mean: sum/count
 
@@ -31,4 +33,14 @@ median(df$column)
 df %>% count(column, sort=TRUE)
 ```
 
+## Measure of spread
+
+Keywords/Topics of interest:
+
+- Variance
+- Standard deviation
+- Mean absolute deviation (MAD)
+- Quantiles/quartiles/percentiles
+- Inter-quantile range (IQR)
+- Box plot
 
