@@ -1,5 +1,7 @@
 # Foundations of Probability in R
 
+## The binomial distribution
+
 1. Note that:
 
 ```r
@@ -9,7 +11,9 @@ pbinom(q, size, prob) = 1 - pbinom(q, size,  prob, lower.tail=FALSE)
 2. Variance:
 $$\sigma^2=Var(X)=size\cdot p \cdot (1-p)$$
 
-3. Multiplying a random variable:
+## Laws of probability
+
+1. Multiplying a random variable:
 
 Given $X \sim Binomial(10, 5)$:
 
@@ -30,4 +34,11 @@ So:
 $$E[k \cdot X] = k \cdot E[X]$$
 $$var(k \cdot X) = k^2 \cdot var(X)$$
 
-3. Adding 2 random variables
+2. Adding 2 random variables
+
+$$E[X+Y]=E[X] + E[Y]$$
+(Even if $X$ and $Y$ are not independent)
+$$Var[X+Y]=Var[X] + Var[Y]$$
+(Only if $X$ and $Y$ are independent)
+
+## Conditional Probability (Bayesian Statistics)
