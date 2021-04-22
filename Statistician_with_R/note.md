@@ -41,4 +41,8 @@ $$E[X+Y]=E[X] + E[Y]$$
 $$Var[X+Y]=Var[X] + Var[Y]$$
 (Only if $X$ and $Y$ are independent)
 
-## Conditional Probability (Bayesian Statistics)
+## Conditional Probability & Bayes' Theorem
+
+Bayes' Theorem:
+
+$$P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}
