@@ -46,3 +46,17 @@ $$Var[X+Y]=Var[X] + Var[Y]$$
 Bayes' Theorem:
 
 $$P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}
+
+TO-READ:
+
+https://e2eml.school/how_bayesian_inference_works.html
+https://news.ycombinator.com/item?id=13684429
+https://news.ycombinator.com/item?id=20095396
+https://news.ycombinator.com/item?id=11555551
+https://www.analyticsvidhya.com/blog/2016/06/bayesian-statistics-beginners-simple-english/
+https://www.reddit.com/r/explainlikeimfive/comments/14eidk/eli5_bayesian_probability/
+https://www.reddit.com/r/explainlikeimfive/comments/nkfcg/eli5_bayesian_probability/
+https://www.yudkowsky.net/rational/bayes
+
+ALSO TRY: 
+https://deepnote.com/
