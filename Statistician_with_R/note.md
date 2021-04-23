@@ -57,6 +57,7 @@ https://www.analyticsvidhya.com/blog/2016/06/bayesian-statistics-beginners-simpl
 https://www.reddit.com/r/explainlikeimfive/comments/14eidk/eli5_bayesian_probability/
 https://www.reddit.com/r/explainlikeimfive/comments/nkfcg/eli5_bayesian_probability/
 https://www.yudkowsky.net/rational/bayes
-
+ 
 ALSO TRY: 
 https://deepnote.com/
+https://www.greenteapress.com/thinkbayes/thinkbayes.pdf
