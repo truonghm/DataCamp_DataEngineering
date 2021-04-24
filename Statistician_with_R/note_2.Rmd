@@ -101,7 +101,8 @@ For example:
 # P(14 heads given fair)
 prob_14_fair <- dbinom(14, 20, .5) * 0.9
 
-# P(14 heads given biased, or not fair)
+# P(14 heads given biased)
+# biases ~ not fair
 prob_14_biased <- dbinom(14, 20, .75) * 0.1
 
 # P(14 heads)
@@ -111,7 +112,7 @@ prob_14 <- prob_14_fair + prob_14_biased
 - The posterior probability $P(biased\ given\ 14\ heads)$ is:
 
 ```{r}
-prob_14_fair/prob_14
+prob_14_biased/prob_14
 ```
 
 # Related distributions
