@@ -1,0 +1,98 @@
+# Foundations of Probability in R
+
+## The binomial distribution
+
+1. Note that:
+
+```{r, eval=FALSE}
+pbinom(q, size, prob) = 1 - pbinom(q, size,  prob, lower.tail=FALSE)
+```
+
+2. Variance:
+$$\sigma^2=Var(X)=size\cdot p \cdot (1-p)$$
+
+## Laws of probability
+
+1. Multiplying a random variable:
+
+Given $X \sim Binomial(10, 5)$:
+
+```{r}
+x <- rbinom(100000, 10, 5)
+mean(x)
+var(x)
+y <- 3 * x
+mean(y)
+var(y)
+```
+- When multiplying a random variable by $k$ (a constant), all of the values of that random variable are also multiplied by $k$.
+- When multiplying a random variable by $k$ (a constant), we also multiply the expected value by $k$.
+- When multiplying a random variable by $k$, we multiply the variable by $k^2$.
+
+So:
+
+$$E[k \cdot X] = k \cdot E[X]$$
+$$var(k \cdot X) = k^2 \cdot var(X)$$
+
+2. Adding 2 random variables
+
+$$E[X+Y]=E[X] + E[Y]$$
+(Even if $X$ and $Y$ are not independent)
+$$Var[X+Y]=Var[X] + Var[Y]$$
+(Only if $X$ and $Y$ are independent)
+
+## Conditional Probability & Bayes' Theorem
+
+First, we need to review a few probability rules:
+
+- Complement and Completeness Rule: $P(A) + P(A^c)=1$ and $P(B \cap A) + P(B \cap A^c) = P(B)$, in which $P(A^c)$ is the probability that $A$ does NOT happen.
+
+- Conditional Probability: $P(A\cap B) = P(A\,|\,B)\,P(B) = P(B\,|\,A)\,P(A)$, or can also be denoted as: $P(A|B) = \frac{P(A \cap B)}{P(B)}$ and $P(B|A) = \frac{P(B \cap A)}{P(B)}$
+
+__Bayes' Theorem:__
+
+$$\begin{aligned}
+P(A|B) &= \frac{P(A\ and\ B\ both\ happen)}{P(B\ happens)} \\
+&=\frac{P(B \cap A)}{P(B)} \\
+&=\frac{P(B \cap A)}{P(B \cap A) + P(B \cap notA)} \\
+&=\frac{P(B|A) \cdot P(A)}{P(B|A) \cdot P(A) + P(B| notA) \cdot P(notA)} 
+\end{aligned}
+$$
+
+In which:
+
+- $P(A)$ and $P(B)$ is the probabilities of observing $A$ and $B$. They are also called the __prior probabilities__.
+- $P(B|A)$ is the conditional probability of $B$ given A, and can also be interpreted as the _likelihood_ of $A$ given a fixed $B$. 
+- $P(A|B)$ is the conditional probability of $A$ given B, or the __posterior probablity__ of $A$ given $B$.
+
+__Bayes' Theorem__ can be used to estimate the probability of an event $A$, given that we have a prior probability (prior for short) $P(A)$, which is the first estimate we have for such event. This can either be our personal belief, or the data we have through past observation. Maybe we want to update this probability (so that it becomes more useful), and intuitively, we would want more evidence. 
+
+By also observing event $B$ (besides $A$), we get $(B)$. We then include these priors into our calculation in order to produce a new probability for $A$ but this time given that $B$ happens, which is $P(A|B)$.
+
+We can also express this process by asking: if we are given $P(B|A)$, how can we "reverse" it and get $P(A|B)$?
+
+For example: 
+
+- We have a coin, which can either be: fair (which gives 50% of head), or biased (which gives 75% of head). 
+
+- We estimate that the coin has a 10% probability of being biased. This is our prior.
+
+- By tossing the coin many times, and observe the amount of time it lands on head, we can update the prior to a posterior probability. In this example, we toss the coin 20 times, in which the coin lands on head 14 times out of 20.
+
+```{r}
+# P(14 heads given fair)
+prob_14_fair <- dbinom(14, 20, .5) * 0.9
+
+# P(14 heads given biased, or not fair)
+prob_14_biased <- dbinom(14, 20, .75) * 0.1
+
+# P(14 heads)
+prob_14 <- prob_14_fair + prob_14_biased
+```
+
+- The posterior probability $P(biased\ given\ 14\ heads)$ is:
+
+```{r}
+prob_14_fair/prob_14
+```
+
