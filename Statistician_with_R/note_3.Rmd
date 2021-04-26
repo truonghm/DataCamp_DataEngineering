@@ -30,7 +30,9 @@ ggplot(data=auto_insurance, mapping=aes(x=X, y=Y)) +
     geom_smooth(method='lm', se=FALSE)
 ```
 
-## Taiwan real estate dataset
+## Numerical explanatory variables 
+
+### Taiwan real estate dataset
 
 The Taiwan real estate dataset contains 4 variables:
 
@@ -56,3 +58,19 @@ ggplot(taiwan_real_estate, aes(n_convenience, price_twd_msq)) +
   geom_smooth(method='lm', se=FALSE)
 ```
 
+### Fitting a linear regression
+
+from the code below, we can see that the data fit to the following linear equation: $Y = 8.2242 + 0.7981  X$.
+
+```{r}
+# Run a linear regression of price_twd_msq vs. n_convenience
+lm(price_twd_msq ~ n_convenience, data = taiwan_real_estate)
+```
+
+From the coefficients above, we can interpret that:
+
+- On average, a house with zero convenience stores nearby had a price of $8.2242$ TWD per square meter.
+
+- If you increase the number of nearby convenience stores by one, then the expected increase in house price is $0.7981$ TWD per square meter.
+
+## Categorical explanatory variables
