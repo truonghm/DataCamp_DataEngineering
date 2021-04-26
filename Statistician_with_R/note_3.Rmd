@@ -6,3 +6,53 @@ output:
 
 # Simple Linear Regression
 
+- Response variable (a.k.a. dependent variable): The variable that we want to predict
+
+- Explanatory variables (a.k.a. independent variables): The variables that explain how the response variable will change.
+
+```{r, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(readr)
+
+auto_insurance <- read_csv('https://raw.githubusercontent.com/truonghm/DataCamp/main/Statistician_with_R/3_Introduction_to_Regression_in_R/sweden_auto_insurance.csv', 
+         col_types=cols(
+             X = col_double(),
+             Y = col_double()
+             )
+         )
+auto_insurance %>%
+    summarise(cor(X, Y))
+
+# lm means linear model
+ggplot(data=auto_insurance, mapping=aes(x=X, y=Y)) +
+    geom_point() +
+    geom_smooth(method='lm', se=FALSE)
+```
+
+## Taiwan real estate dataset
+
+The Taiwan real estate dataset contains 4 variables:
+
+| dist_to_mrt_station_m | Distance to nearest MRT metro station, in meters.                   |
+|-----------------------|---------------------------------------------------------------------|
+| n_convenience         | No. of convenience stores in walking distance.                      |
+| house_age_years       | The age of the house, in years, in 3 groups.                        |
+| price_twd_msq         | House price per unit area, in New Taiwan dollars per meter squared. |
+
+```{r}
+taiwan_real_estate <- read_csv('https://raw.githubusercontent.com/truonghm/DataCamp/main/Statistician_with_R/3_Introduction_to_Regression_in_R/taiwan_real_estate.csv', 
+         col_types = cols(
+             dist_to_mrt_m = col_double(),
+             n_convenience = col_double(),
+             house_age_years = col_character(),
+             price_twd_msq = col_double()
+             )
+         )
+# The number of convenience stores contains integer data, causing points to overlap. 
+# To solve this, we will make the points transparent.
+ggplot(taiwan_real_estate, aes(n_convenience, price_twd_msq)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method='lm', se=FALSE)
+```
+
