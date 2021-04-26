@@ -74,3 +74,60 @@ From the coefficients above, we can interpret that:
 - If you increase the number of nearby convenience stores by one, then the expected increase in house price is $0.7981$ TWD per square meter.
 
 ## Categorical explanatory variables
+
+The Taiwan real estate dataset has a categorical variable in the form of the age of each house. The ages have been split into 3 groups: 0 to 15 years, 15 to 30 years, and 30 to 45 years.
+
+```{r}
+# Using taiwan_real_estate, plot price_twd_msq
+ggplot(data=taiwan_real_estate, mapping=aes(x=price_twd_msq)) +
+  # Make it a histogram with 10 bins
+  geom_histogram(bins=10) +
+  # Facet the plot so each house age group gets its own panel
+  facet_wrap(vars(house_age_years))
+```
+
+### Calculating means by category
+
+A good way to explore categorical variables is to calculate summary statistics such as the mean for each category.
+
+```{r}
+summary_stats <- taiwan_real_estate %>% 
+  # Group by house age
+  group_by(house_age_years) %>% 
+  # Summarize to calculate the mean house price/area
+  summarise(mean_by_group = mean(price_twd_msq))
+
+# See the result
+summary_stats
+```
+
+### Linear regression with a categorical explanatory variable
+
+Linear regressions also work with categorical explanatory variables. In this case, the code to run the model is the same, but the coefficients returned by the model are different.
+
+In the code below, the intercept is actually the mean price of 0 to 15, and the other 2 coefficients are relative difference to from the intercept.
+
+```{r}
+# Run a linear regression of price_twd_msq vs. house_age_years
+mdl_price_vs_age <- lm(price_twd_msq ~ house_age_years, data=taiwan_real_estate)
+
+# See the result
+mdl_price_vs_age
+```
+
+By changing the model to append `+ 0`, we have the absolute mean price of each age group.
+
+```{r}
+# Update the model formula to remove the intercept
+mdl_price_vs_age_no_intercept <- lm(
+  price_twd_msq ~ house_age_years + 0, 
+  data = taiwan_real_estate
+)
+
+# See the result
+mdl_price_vs_age_no_intercept
+```
+
+
+# Predictions and model objects
+
