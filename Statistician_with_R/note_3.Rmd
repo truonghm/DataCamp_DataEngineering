@@ -131,3 +131,25 @@ mdl_price_vs_age_no_intercept
 
 # Predictions and model objects
 
+Making prediction using linear regression:
+
+```{r}
+explanatory_data <- tibble(
+  n_convenience = 0:10
+)
+prediction_data <- explanatory_data %>%
+    mutate(price_twd_msq  = predict(mdl_price_vs_conv, explanatory_data)
+    )
+prediction_data
+```
+
+Plotting the prediction data against the original data
+
+```{r}
+# Add to the plot
+ggplot(taiwan_real_estate, aes(n_convenience, price_twd_msq)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  # Add a point layer of prediction data, colored yellow
+  geom_point(data=prediction_data, aes(n_convenience, price_twd_msq), color='yellow')
+```
